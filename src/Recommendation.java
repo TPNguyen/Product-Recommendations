@@ -22,12 +22,20 @@ public class Recommendation {
 		pairRules = new RuleArray();
 		tripleRules = new RuleArray();
 		threshold = 100;
+		System.out.println("First Pass");
 		firstPass();
 		pruneSingles();
+		System.out.println("Second Pass");
 		secondPass();
 		prunePairs();
+		System.out.println("Third Pass");
 		thirdPass();
 		pruneTriples();
+		System.out.println("Computing pair rules");
+		computePairRules();
+		pairRules.printAr();
+		System.out.println("Computing triple rules");
+		computeTripleRules();
 		System.out.println("Finished");
 	}
 	
@@ -165,7 +173,30 @@ public class Recommendation {
 		br.close();
 	}
 	//All used in the third step of the algorithm
+	//Used to compute the pair rules
+	private static void computePairRules(){
+		Iterator<Map.Entry<HashSet<String>,Integer>> iter = pairCounts.entrySet().iterator();
+		while (iter.hasNext()) {
+		    Map.Entry<HashSet<String>,Integer> entry = iter.next();
+		    String[] pair = new String[2];
+		    pair = entry.getKey().toArray(pair);
+		    HashSet<String> a = new HashSet<String>(1);
+		    HashSet<String> b = new HashSet<String>(1);
+		    a.add(pair[0]);
+		    b.add(pair[1]);
+		    PairRule rule1 = new PairRule(a,b);
+		    PairRule rule2 = new PairRule(b,a);
+		    pairRules.addRule(rule1);
+		    pairRules.addRule(rule2);
+		}
+	}
+	//Used to compute the triple rules
+	private static void computeTripleRules(){
+		
+	}
 	
+	
+
 	public static class RuleArray{
 		ArrayList<Rule> topRules;
 		int maxRules = 5;
@@ -174,6 +205,7 @@ public class Recommendation {
 		}
 		
 		public void addRule(Rule rule){
+			if(topRules.contains(rule)) return;
 			if(topRules.size() < maxRules){
 				topRules.add(rule);
 			}else{
@@ -189,6 +221,13 @@ public class Recommendation {
 				if(index != -1 && minConf < rule.getConfidence()){
 					topRules.set(index,rule);
 				}
+			}
+		}
+	
+		public void printAr(){
+			for(int i = 0; i < 5; i++){
+				Rule rule = topRules.get(i);
+				System.out.println(rule.toString());
 			}
 		}
 	}
@@ -213,7 +252,9 @@ public class Recommendation {
 			pair.addAll(left);
 			pair.addAll(right);
 			int countPair = pairCounts.get(pair);
-			int leftCount = singleCounts.get(left.toArray()[0]);
+			String[] leftStr = new String[1];
+			leftStr = left.toArray(leftStr);
+			int leftCount = singleCounts.get(leftStr[0]);
 			this.confidence = (double)countPair/(double)leftCount;
 		}
 		
@@ -223,7 +264,7 @@ public class Recommendation {
 		
 		@Override
 		public String toString(){
-			return left.toString() + " => " + right.toString();
+			return left.toString() + " => " + right.toString() + " Confidence: " + confidence;
 		}
 	}
 	//Rules for itemsets of 3
@@ -253,7 +294,7 @@ public class Recommendation {
 		
 		@Override
 		public String toString(){
-			return left.toString() + " => " + right.toString();
+			return left.toString() + " => " + right.toString() + " Confidence: " + confidence;
 		}
 	}
 	
