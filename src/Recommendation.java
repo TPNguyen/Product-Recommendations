@@ -7,15 +7,20 @@ public class Recommendation {
 	public static HashMap<HashSet<String>,Integer> tripleCounts;
 	public static String inputFile;
 	public static String outputFile;
-	public static int threshold = 100;
+	public static int threshold;
 	
 	public static void main(String[] args) throws Exception {
+		//Set the files
 		inputFile = args[0];
 		outputFile = args[1];
+		//Set the class variable
+		singleCounts = new HashMap<String,Integer>();
+		threshold = 100;
 		firstPass();
 		pruneSingles();
 	}
 	
+	//All used in the first step of the algorithm
 	private static void countSingles(String line){
 		String[] ar = line.split("\\s+");
 		int size = ar.length;
@@ -30,11 +35,12 @@ public class Recommendation {
 	}
 
 	private static void pruneSingles(){
-		Set<String> keys = singleCounts.keySet();
-		for(String key: keys){
-			if(singleCounts.get(key) < threshold){
-				singleCounts.remove(key);
-			}
+		Iterator<Map.Entry<String,Integer>> iter = singleCounts.entrySet().iterator();
+		while (iter.hasNext()) {
+		    Map.Entry<String,Integer> entry = iter.next();
+		    if(entry.getValue() < threshold){
+		        iter.remove();
+		    }
 		}
 	}
 
@@ -48,6 +54,7 @@ public class Recommendation {
 		}
 		br.close();
 	}
+	//All used in the first step of the algorithm
 	
 	
 	private static void makePairs(String value){
