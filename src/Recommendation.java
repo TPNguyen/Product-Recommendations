@@ -12,20 +12,39 @@ public class Recommendation {
 	public static void main(String[] args) throws Exception {
 		inputFile = args[0];
 		outputFile = args[1];
-		readFile();
+		firstPass();
+		pruneSingles();
 	}
 	
-	private static void countSingles(){
-		
+	private static void countSingles(String line){
+		String[] ar = line.split("\\s+");
+		int size = ar.length;
+		for(int i = 0; i < size; i++){
+			String key = ar[i];
+			if(singleCounts.containsKey(key)){
+				singleCounts.put(key,singleCounts.get(key)+1);
+			}else{
+				singleCounts.put(key,1);
+			}
+		}
 	}
-	
-	private static void readFile() throws IOException{
+
+	private static void pruneSingles(){
+		Set<String> keys = singleCounts.keySet();
+		for(String key: keys){
+			if(singleCounts.get(key) < threshold){
+				singleCounts.remove(key);
+			}
+		}
+	}
+
+	private static void firstPass() throws IOException{
 		// Construct BufferedReader from FileReader
 		File fi = new File(inputFile);
 		BufferedReader br = new BufferedReader(new FileReader(fi));
 		String line = null;
 		while ((line = br.readLine()) != null) {
-			System.out.println(line);
+			countSingles(line);
 		}
 		br.close();
 	}
@@ -54,4 +73,14 @@ public class Recommendation {
 	   }
    }
 	
+	private static void readFile() throws IOException{
+		// Construct BufferedReader from FileReader
+		File fi = new File(inputFile);
+		BufferedReader br = new BufferedReader(new FileReader(fi));
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			System.out.println(line);
+		}
+		br.close();
+	}
 }
