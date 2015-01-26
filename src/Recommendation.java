@@ -19,17 +19,17 @@ public class Recommendation {
 		tripleCounts = new HashMap<HashSet<String>,Integer>();
 		threshold = 100;
 		firstPass();
-		System.out.println("1st Candidates: " + singleCounts.size());
+		//System.out.println("1st Candidates: " + singleCounts.size());
 		pruneSingles();
-		System.out.println("1st Official: " + singleCounts.size());
+		//System.out.println("1st Official: " + singleCounts.size());
 		secondPass();
-		System.out.println("2nd Candidates: " + pairCounts.size());
+		//System.out.println("2nd Candidates: " + pairCounts.size());
 		prunePairs();
-		System.out.println("2nd Official: " + pairCounts.size());
+		//System.out.println("2nd Official: " + pairCounts.size());
 		thirdPass();
-		System.out.println("3rd Candidates: " + tripleCounts.size());
+		//System.out.println("3rd Candidates: " + tripleCounts.size());
 		pruneTriples();
-		System.out.println("3rd Official: " + tripleCounts.size());
+		//System.out.println("3rd Official: " + tripleCounts.size());
 		System.out.println("Finished");
 	}
 	
@@ -168,7 +168,59 @@ public class Recommendation {
 	}
 	//All used in the third step of the algorithm
 	
+	//Rules for itemsets of 2
+	class PairRule{
+		double confidence;
+		HashSet<String> left;
+		HashSet<String> right;
+		
+		public PairRule(HashSet<String> left, HashSet<String> right){
+			this.left = left;
+			this.right = right;
+			computeConfidence();
+		}
+		
+		private void computeConfidence(){
+			HashSet<String> pair = new HashSet<String>(2);
+			pair.addAll(left);
+			pair.addAll(right);
+			int countPair = pairCounts.get(pair);
+			int leftCount = singleCounts.get(left.toArray()[0]);
+			this.confidence = (double)countPair/(double)leftCount;
+		}
+		
+		@Override
+		public String toString(){
+			return null;
+		}
+	}
 	
+	//Rules for itemsets of 3
+	class TripleRule{
+		double confidence;
+		HashSet<String> left;
+		HashSet<String> right;
+		
+		public TripleRule(HashSet<String> left, HashSet<String> right){
+			this.left = left;
+			this.right = right;
+			computeConfidence();
+		}
+		
+		private void computeConfidence(){
+			HashSet<String> triple = new HashSet<String>(3);
+			triple.addAll(left);
+			triple.addAll(right);
+			int countPair = pairCounts.get(left);
+			int countTriple = tripleCounts.get(triple);
+			this.confidence = (double)countTriple/(double)countPair;
+		}
+		
+		@Override
+		public String toString(){
+			return null;
+		}
+	}
 	
 	//This is just the model for reading the file
 	private static void readFile() throws IOException{
