@@ -36,6 +36,7 @@ public class Recommendation {
 		pairRules.printAr();
 		System.out.println("Computing triple rules");
 		computeTripleRules();
+		tripleRules.printAr();
 		System.out.println("Finished");
 	}
 	
@@ -192,7 +193,39 @@ public class Recommendation {
 	}
 	//Used to compute the triple rules
 	private static void computeTripleRules(){
-		
+		Iterator<Map.Entry<HashSet<String>,Integer>> iter = tripleCounts.entrySet().iterator();
+		while (iter.hasNext()) {
+		    Map.Entry<HashSet<String>,Integer> entry = iter.next();
+		    HashSet<String> triple = entry.getKey();
+		    for(String key1: triple){
+		    	for(String key2: triple){
+		    		if(!key1.equals(key2)){
+		    			for(String key3: triple){
+		    				if(!key2.equals(key3) && !key1.equals(key3)){
+		    					HashSet<String> left = new HashSet<String>(2);
+		    					left.add(key1);
+		    					left.add(key2);
+		    					HashSet<String> right = new HashSet<String>(1);
+		    					right.add(key3);
+		    					TripleRule rm = new TripleRule(left,right);
+		    					tripleRules.addRule(rm);
+		    				}
+		    			}
+		    		}
+		    	}
+		    }
+		    
+		    String[] pair = new String[2];
+		    pair = entry.getKey().toArray(pair);
+		    HashSet<String> a = new HashSet<String>(1);
+		    HashSet<String> b = new HashSet<String>(1);
+		    a.add(pair[0]);
+		    b.add(pair[1]);
+		    PairRule rule1 = new PairRule(a,b);
+		    PairRule rule2 = new PairRule(b,a);
+		    pairRules.addRule(rule1);
+		    pairRules.addRule(rule2);
+		}
 	}
 	
 	
@@ -266,6 +299,20 @@ public class Recommendation {
 		public String toString(){
 			return left.toString() + " => " + right.toString() + " Confidence: " + confidence;
 		}
+		
+		@Override
+		public boolean equals(Object obj){
+			if (!(obj instanceof PairRule))
+	            return false;
+	        if (obj == this)
+	            return true;
+	        PairRule pr = (PairRule) obj;
+	        if(pr.left.equals(this.left) && pr.right.equals(this.right) && this.confidence == pr.confidence){
+	        	return true;
+	        }else{
+	        	return false;
+	        }
+		}
 	}
 	//Rules for itemsets of 3
 	public static class TripleRule implements Rule{
@@ -295,6 +342,19 @@ public class Recommendation {
 		@Override
 		public String toString(){
 			return left.toString() + " => " + right.toString() + " Confidence: " + confidence;
+		}
+	
+		public boolean equals(Object obj){
+			if (!(obj instanceof TripleRule))
+	            return false;
+	        if (obj == this)
+	            return true;
+	        TripleRule pr = (TripleRule) obj;
+	        if(pr.left.equals(this.left) && pr.right.equals(this.right) && this.confidence == pr.confidence){
+	        	return true;
+	        }else{
+	        	return false;
+	        }
 		}
 	}
 	
