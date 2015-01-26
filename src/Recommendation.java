@@ -250,9 +250,22 @@ public class Recommendation {
 						minConf = obj.getConfidence();
 						index = i;
 					}
+					if(obj.getConfidence() == minConf){
+						Rule obj2 = topRules.get(index);
+						if(obj.toString().compareTo(obj2.toString()) > 0){
+							minConf = obj.getConfidence();
+							index = i;
+						}
+					}					
 				}
 				if(index != -1 && minConf < rule.getConfidence()){
 					topRules.set(index,rule);
+				}
+				if(index != -1 && minConf == rule.getConfidence()){
+					Rule obj = topRules.get(index);
+					if(obj.toString().compareTo(rule.toString()) > 0){
+						topRules.set(index,rule);
+					}
 				}
 			}
 		}
