@@ -1,14 +1,35 @@
+import java.io.*;
 import java.util.*;
 
 public class Recommendation {
 	public static HashMap<String,Integer> singleCounts;
 	public static HashMap<HashSet<String>,Integer> pairCounts;
 	public static HashMap<HashSet<String>,Integer> tripleCounts;
+	public static String inputFile;
+	public static String outputFile;
 	public static int threshold = 100;
 	
 	public static void main(String[] args) throws Exception {
-	
+		inputFile = args[0];
+		outputFile = args[1];
+		readFile();
 	}
+	
+	private static void countSingles(){
+		
+	}
+	
+	private static void readFile() throws IOException{
+		// Construct BufferedReader from FileReader
+		File fi = new File(inputFile);
+		BufferedReader br = new BufferedReader(new FileReader(fi));
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			System.out.println(line);
+		}
+		br.close();
+	}
+	
 	
 	private static void makePairs(String value){
 	   String[] ar = value.split("\\s+");
