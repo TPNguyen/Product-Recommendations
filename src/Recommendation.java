@@ -5,6 +5,8 @@ public class Recommendation {
 	public static HashMap<String,Integer> singleCounts;
 	public static HashMap<HashSet<String>,Integer> pairCounts;
 	public static HashMap<HashSet<String>,Integer> tripleCounts;
+	public static Recommendation.RuleArray pairRules;
+	public static Recommendation.RuleArray tripleRules;
 	public static String inputFile;
 	public static String outputFile;
 	public static int threshold;
@@ -17,19 +19,15 @@ public class Recommendation {
 		singleCounts = new HashMap<String,Integer>();
 		pairCounts = new HashMap<HashSet<String>,Integer>();
 		tripleCounts = new HashMap<HashSet<String>,Integer>();
+		pairRules = new RuleArray();
+		tripleRules = new RuleArray();
 		threshold = 100;
 		firstPass();
-		//System.out.println("1st Candidates: " + singleCounts.size());
 		pruneSingles();
-		//System.out.println("1st Official: " + singleCounts.size());
 		secondPass();
-		//System.out.println("2nd Candidates: " + pairCounts.size());
 		prunePairs();
-		//System.out.println("2nd Official: " + pairCounts.size());
 		thirdPass();
-		//System.out.println("3rd Candidates: " + tripleCounts.size());
 		pruneTriples();
-		//System.out.println("3rd Official: " + tripleCounts.size());
 		System.out.println("Finished");
 	}
 	
@@ -168,8 +166,38 @@ public class Recommendation {
 	}
 	//All used in the third step of the algorithm
 	
+	public static class RuleArray{
+		ArrayList<Rule> topRules;
+		int maxRules = 5;
+		public RuleArray(){
+			topRules = new ArrayList<Rule>(5);
+		}
+		
+		public void addRule(Rule rule){
+			if(topRules.size() < maxRules){
+				topRules.add(rule);
+			}else{
+				int index = -1;
+				double minConf = Integer.MAX_VALUE;
+				for(int i = 0; i < maxRules; i++){
+					Rule obj = topRules.get(i);
+					if(obj.getConfidence() < minConf){
+						minConf = obj.getConfidence();
+						index = i;
+					}
+				}
+				if(index != -1 && minConf < rule.getConfidence()){
+					topRules.set(index,rule);
+				}
+			}
+		}
+	}
+	public static interface Rule{
+		public double getConfidence();
+		public String toString();
+	}
 	//Rules for itemsets of 2
-	class PairRule{
+	public static class PairRule implements Rule{
 		double confidence;
 		HashSet<String> left;
 		HashSet<String> right;
@@ -189,14 +217,17 @@ public class Recommendation {
 			this.confidence = (double)countPair/(double)leftCount;
 		}
 		
+		public double getConfidence(){
+			return confidence;
+		}
+		
 		@Override
 		public String toString(){
-			return null;
+			return left.toString() + " => " + right.toString();
 		}
 	}
-	
 	//Rules for itemsets of 3
-	class TripleRule{
+	public static class TripleRule implements Rule{
 		double confidence;
 		HashSet<String> left;
 		HashSet<String> right;
@@ -216,11 +247,16 @@ public class Recommendation {
 			this.confidence = (double)countTriple/(double)countPair;
 		}
 		
+		public double getConfidence(){
+			return confidence;
+		}
+		
 		@Override
 		public String toString(){
-			return null;
+			return left.toString() + " => " + right.toString();
 		}
 	}
+	
 	
 	//This is just the model for reading the file
 	private static void readFile() throws IOException{
