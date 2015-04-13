@@ -44,12 +44,16 @@ public class Recommendation {
 	private static void countSingles(String line){
 		String[] ar = line.split("\\s+");
 		int size = ar.length;
+		HashSet<String> dups = new HashSet<String>(size);
 		for(int i = 0; i < size; i++){
 			String key = ar[i];
-			if(singleCounts.containsKey(key)){
-				singleCounts.put(key,singleCounts.get(key)+1);
-			}else{
-				singleCounts.put(key,1);
+			if(!dups.contains(key)){
+				dups.add(key);
+				if(singleCounts.containsKey(key)){
+					singleCounts.put(key,singleCounts.get(key)+1);
+				}else{
+					singleCounts.put(key,1);
+				}
 			}
 		}
 	}

@@ -1,0 +1,34 @@
+First Pass
+Second Pass
+Third Pass
+Computing pair rules
+[DAI88079] => [FRO40251] Confidence: 0.9867256637168141
+[GRO85051] => [FRO40251] Confidence: 0.999176276771005
+[DAI93865] => [FRO40251] Confidence: 1.0
+[GRO38636] => [FRO40251] Confidence: 0.9906542056074766
+[ELE12951] => [FRO40251] Confidence: 0.9905660377358491
+Computing triple rules
+[GRO38814, GRO85051] => [FRO40251] Confidence: 1.0
+[GRO21487, GRO85051] => [FRO40251] Confidence: 1.0
+[DAI88079, DAI62779] => [FRO40251] Confidence: 1.0
+[FRO92469, ELE20847] => [FRO40251] Confidence: 1.0
+[DAI23334, ELE92920] => [DAI62779] Confidence: 1.0
+Finished
+
+First Pass
+Second Pass
+Third Pass
+Computing pair rules
+[DAI88079] => [FRO40251] Confidence: 0.9867256637168141
+[GRO85051] => [FRO40251] Confidence: 0.999176276771005
+[DAI93865] => [FRO40251] Confidence: 1.0
+[GRO38636] => [FRO40251] Confidence: 0.9906542056074766
+[ELE12951] => [FRO40251] Confidence: 0.9905660377358491
+Computing triple rules
+[GRO38814, GRO85051] => [FRO40251] Confidence: 1.0
+[GRO21487, GRO85051] => [FRO40251] Confidence: 1.0
+[DAI88079, DAI62779] => [FRO40251] Confidence: 1.0
+[FRO92469, ELE20847] => [FRO40251] Confidence: 1.0
+[DAI23334, ELE92920] => [DAI62779] Confidence: 1.0
+Finished
+
